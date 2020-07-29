@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="io.nuite.modules.small_integral.dao.IntegralDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap
+		type="io.nuite.modules.small_integral.entity.IntegralEntity"
+		id="integralMap">
+		<result property="integralId" column="integralId" />
+		<result property="integralType" column="integralType" />
+		<result property="continuous" column="continuous" />
+		<result property="taskType" column="taskType" />
+		<result property="integralTotal" column="integralTotal" />
+		<result property="inputTime" column="InputTime" />
+		<result property="del" column="Del" />
+		<result property="UserId" column="UserId" />
+		<result property="finishTime" column="finishTime" />
+	</resultMap>
+	<select id="getOnebyTime" resultMap="integralMap">
+		SELECT
+		*
+		FROM
+		[IntegralYH].[dbo].[integral] WHERE userId=#{userId} AND CONVERT (
+		DATE, InputTime ) = CONVERT ( DATE, #{date}) AND integralType=1
+	</select>
+	<select id="getListByTime" resultMap="integralMap">
+		SELECT
+		*
+		FROM
+		[IntegralYH].[dbo].[integral] WHERE userId=#{userId} AND CONVERT
+		(
+		DATE, InputTime ) = CONVERT ( DATE, #{date})
+	</select>
+	<select id="getCountByTime" resultType="java.lang.Integer">
+			SELECT sum(integralTotal) FROM [IntegralYH].[dbo].[integral] WHERE
+		datediff(dd,[InputTime],#{date})=0 AND userId=#{userId}
+	</select>
+	<select id="getCountByWeek" resultType="java.lang.Integer">
+		SELECT sum(integralTotal) FROM [IntegralYH].[dbo].[integral] WHERE
+		datediff(week,[InputTime],#{date})=0 AND userId=#{userId}
+	</select>
+	<select id="getCountByMonth" resultType="java.lang.Integer">
+		SELECT sum(integralTotal) FROM [IntegralYH].[dbo].[integral] WHERE
+		datediff(month,[InputTime],#{date})=0 AND userId=#{userId}
+	</select>
+	<select id="getCount" resultType="java.lang.Integer">
+		SELECT sum(integralTotal) FROM [IntegralYH].[dbo].[integral] WHERE
+		userId=#{userId}
+	</select>
+</mapper>

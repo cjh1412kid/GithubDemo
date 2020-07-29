@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="io.nuite.modules.small_integral.dao.CheckInOutDao">
+
+
+	<resultMap
+		type="io.nuite.modules.small_integral.entity.CheckInOutEntity"
+		id="checkInOutMap">
+		<result property="userId" column="USERID" />
+		<result property="checkTime" column="CHECKTIME" />
+		<result property="checkType" column="CHECKTYPE" />
+		<result property="verifyCode" column="VERIFYCODE" />
+		<result property="sensorId" column="SENSORID" />
+		<result property="memoinfo" column="Memoinfo" />
+		<result property="workCode" column="WorkCode" />
+		<result property="sn" column="sn" />
+		<result property="userExtFmt" column="UserExtFmt" />
+	</resultMap>
+
+	<select id="getTodayCheckInList" resultMap="checkInOutMap">
+		SELECT
+		*
+		FROM
+		[IntegralYH].[dbo].[CHECKINOUT] AS t
+		WHERE
+		NOT EXISTS (
+		SELECT
+		1
+		FROM
+		[IntegralYH].[dbo].[CHECKINOUT]
+		WHERE
+		[USERID] = t.[USERID]
+		AND CONVERT ( VARCHAR ( 8 ), [CHECKTIME], 112 ) = CONVERT ( VARCHAR ( 8
+		), t.[CHECKTIME], 112 )
+		AND [CHECKTIME] &lt; t.[CHECKTIME]
+		)
+		AND CONVERT ( VARCHAR ( 8 ), t.[CHECKTIME], 8 ) BETWEEN '${beginTime}' AND
+		'${endTime}' AND CONVERT ( DATE, CHECKTIME ) = CONVERT ( DATE, #{dateTime}
+		)
+	</select>
+	<select id="getTodayCheckOutList" resultMap="checkInOutMap">
+	SELECT
+		*
+		FROM
+		[IntegralYH].[dbo].[CHECKINOUT] AS t
+		WHERE
+		NOT EXISTS (
+		SELECT
+		1
+		FROM
+		[IntegralYH].[dbo].[CHECKINOUT]
+		WHERE
+		[USERID] = t.[USERID]
+		AND CONVERT ( VARCHAR ( 8 ), [CHECKTIME], 112 ) = CONVERT ( VARCHAR ( 8
+		), t.[CHECKTIME], 112 )
+		AND [CHECKTIME] &gt; t.[CHECKTIME]
+		)  AND CONVERT ( DATE, CHECKTIME ) = CONVERT ( DATE,#{dateTime}
+		)
+	</select>
+	<select id="delCheckInOuts">
+	DELETE FROM [IntegralYH].[dbo].[CHECKINOUT] WHERE CHECKTIME BETWEEN '${startTime}' AND '${endTime}'
+	</select>
+	<insert id="insertCheckInout" >
+	insert into  [IntegralYH].[dbo].[CHECKINOUT] values (#{USERID},#{CHECKTIME},#{CHECKTYPE},#{VERIFYCODE},#{SENSORID},#{Memoinfo},#{WorkCode},#{sn},#{UserExtFmt})
+	</insert>
+</mapper>

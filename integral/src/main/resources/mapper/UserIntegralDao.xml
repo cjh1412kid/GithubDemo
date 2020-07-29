@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="io.nuite.modules.small_integral.dao.UserIntegralDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap type="io.nuite.modules.small_integral.entity.UserIntegralEntity" id="integralMap">
+		<result property="seq" column="Seq" />
+		<result property="userSeq" column="UserSeq" />
+		<result property="integralType" column="IntegralType" />
+		<result property="integral" column="integral" />
+		<result property="remark" column="remark" />
+		<result property="inputTime" column="InputTime" />
+		<result property="del" column="Del" />
+	</resultMap>
+	<select id="getOnebyTime" resultMap="integralMap">
+		SELECT
+		*
+		FROM
+		[IntegralYH].[dbo].[NWUser_Integral] WHERE UserSeq=#{userId} AND CONVERT (
+		DATE, InputTime ) = CONVERT ( DATE, #{date}) AND integralType=1 AND remark LIKE '早上准点%'
+	</select>
+	<select id="getListByTime" resultMap="integralMap">
+		SELECT
+		*
+		FROM
+		[IntegralYH].[dbo].[NWUser_Integral] WHERE UserSeq=#{userId} AND CONVERT
+		(
+		DATE, InputTime ) = CONVERT ( DATE, #{date})
+	</select>
+	<select id="getCountByTime" resultType="java.lang.Integer">
+			SELECT sum(integral) FROM [IntegralYH].[dbo].[NWUser_Integral] WHERE
+		datediff(dd,[InputTime],#{date})=0 AND UserSeq=#{userId}
+	</select>
+	<select id="getCountByWeek" resultType="java.lang.Integer">
+		SELECT sum(integral) FROM [IntegralYH].[dbo].[NWUser_Integral] WHERE
+		datediff(week,[InputTime],#{date})=0 AND UserSeq=#{userId}
+	</select>
+	<select id="getCountByMonth" resultType="java.lang.Integer">
+		SELECT sum(integral) FROM [IntegralYH].[dbo].[NWUser_Integral] WHERE
+		datediff(month,[InputTime],#{date})=0 AND UserSeq=#{userId}
+	</select>
+	<select id="getCount" resultType="java.lang.Integer">
+		SELECT sum(integral) FROM [IntegralYH].[dbo].[NWUser_Integral] WHERE
+		UserSeq=#{userId}
+	</select>
+	<select id="getCountByOnTime" resultType="java.lang.Integer">
+	SELECT sum(integral) FROM [IntegralYH].[dbo].[NWUser_Integral] WHERE
+		datediff(dd,[InputTime],#{date})=0 AND UserSeq=#{userId} AND integral > 0 AND IntegralType=1
+	</select>
+	<select id="getLate" resultType="java.lang.Integer">
+		SELECT count(Seq) FROM [IntegralYH].[dbo].[NWUser_Integral] WHERE
+		UserSeq=#{userId} AND datediff(month,[InputTime],#{date})=0  AND integral &lt; 0 AND remark LIKE '早上迟到%'  or remark like '早上未打卡%'
+	</select>
+		<select id="getCheckInByTime" resultType="java.lang.Integer">
+		SELECT
+		count(*)
+		FROM
+		[IntegralYH].[dbo].[NWUser_Integral] WHERE UserSeq=#{userId} AND CONVERT
+		(
+		DATE, InputTime ) = CONVERT ( DATE, #{date}) AND IntegralType=1 
+	</select>
+	<select id="getByParam" resultMap="integralMap">
+		SELECT * FROM [IntegralYH].[dbo].[NWUser_Integral] WHERE Del=0 AND UserSeq = #{userSeq} AND InputTime=#{inputTime}
+	</select>
+</mapper>

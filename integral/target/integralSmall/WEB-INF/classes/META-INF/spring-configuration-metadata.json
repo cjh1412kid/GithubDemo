@@ -1,0 +1,34 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "io.nuite.common.utils.JwtUtils",
+      "name": "nuite.jwt",
+      "type": "io.nuite.common.utils.JwtUtils"
+    },
+    {
+      "sourceType": "io.nuite.datasources.DynamicDataSourceConfig",
+      "name": "spring.datasource.druid.quartz",
+      "sourceMethod": "quartzDataSource()",
+      "type": "javax.sql.DataSource"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "io.nuite.common.utils.JwtUtils",
+      "defaultValue": 0,
+      "name": "nuite.jwt.expire",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "io.nuite.common.utils.JwtUtils",
+      "name": "nuite.jwt.header",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "io.nuite.common.utils.JwtUtils",
+      "name": "nuite.jwt.secret",
+      "type": "java.lang.String"
+    }
+  ]
+}
